@@ -6,4 +6,4 @@ check are empty, if you run run.sh it may complain there is no directory
 if so, you can make it in linux by typing: mkdir dirname. If something
 does not work, please contact me and I will fix it! If you want help 
 installing LAMMPS make sure to follow the tutorial on my blog at 
-http://rocketurtlestars.co/home.html. Thanks :)
+http://rocketurtlestars.co. Thanks :)
