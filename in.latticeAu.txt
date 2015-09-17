@@ -1,0 +1,70 @@
+# INPUT SCRIPT
+
+## Step 1: Initialization
+units metal
+# 'unit style' For style 'metal', these are the units:
+# distance=Angstroms, mass=grams/mol, density=grams/cm^dim, time=picosecond, 
+# Temp=Kelvin, 1.0 is proton charge, press=bars, Electric field is volts/Angstrom
+# energy=eV, torque=eV, force=eV/Angstrom
+
+# read_data
+# 'read_data': initializes the system by setting up the simualtion box and assigning
+# atoms to processors. If defualt values are not desired then the commands
+# 'processors' and 'boundary' must be used before 'read_data'
+
+boundary p p p
+# f: fixed, s: shrink-wrapped, do I want f or s?
+
+atom_style atomic
+# styles I think may work for Au are: atomic, body, line, meso, peri, sphere, tri
+
+## Step 2: Atom Definition. 3 ways to define atoms; {read_data,read_restart, or, (lattice,region,create_box,create_atoms)}
+
+# lattice fcc 4.080
+# 'lattice' creates a lattice with scaling to simulation box of 4.080Angstroms, the Au lattice constant
+# later use region, create_box, create_atoms with replicate commands because 'lattice' extends infinitely &
+does that mean it has boundary condition 'p'?
+
+# from slides, change later to correct values for Au
+#lattice custom 3.2 &
+#	a1 -0.5 0.5 0.5 &
+#	a2 0.5 -0.5 0.5 &
+#	a3 0.5 0.5 -0.5 &
+#	basis 0.0 0.0 0.0
+
+lattice fcc 4.080
+
+region myRegion block 0 20 0 20 0 40 units lattice
+
+# create a box object from the above defined region
+create_box 1 myRegion
+create_atoms 1 box basis 1 1
+mass 1 196.967
+
+
+## Step 3: Settings
+pair_style eam
+# If force-field parameters appear in the files that will be read, these commands tell LAMMPS what kinds of&
+force fields are being used:
+pair_coeff * * Au_u3.eam 
+
+# DUMP SEQUENCE MATTERS. PUT BEFORE RUNNING SIMULATION
+dump 2 all xyz 1 dump.*.xyz
+dump_modify 2 pad 7
+dump_modify 2 flush yes
+
+## Step 4: Run Simulation
+# from lab slides
+
+min_style cg
+minimize 1.0e-8 1.0e-8 10000 10000
+
+fix 3 all box/relax iso 0.0 vmax 0.001
+
+compute peg all pe
+fix 2 all ave/time 5 10 100 c_peg file potential.txt
+
+# log output definitions
+thermo 100
+thermo_style custom step press temp pe ke etotal vol
+thermo_modify flush no

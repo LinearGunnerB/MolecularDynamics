@@ -1,0 +1,39 @@
+# Input-Script: in.minNW.txt
+###############################
+#Step 1: Initialization
+units metal
+atom_style atomic
+boundary p p p
+
+read_data data2min001.txt
+#read_data dataTest2.txt
+
+
+pair_style eam
+pair_coeff * * Au_u3.eam
+
+# log output definitions
+thermo_style custom step press temp pe ke etotal
+thermo 100
+#thermo_modify flush no
+
+dump 2 all xyz 1 dump.*.xyz
+dump_modify 2 pad 7
+dump_modify 2 flush yes
+
+# Energy minimization
+min_style cg
+minimize 1.0e-8 1.0e-8 10000 10000 
+
+
+#run 10000
+#fix 1 all nvt temp 300.0 300.0 1.0
+#minimize 1.0e-8 1.0e-8 10000 10000
+
+
+compute peg all pe
+fix 2 all ave/time 5 10 100 c_peg file potential.txt
+
+
+
+
