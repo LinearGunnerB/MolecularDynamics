@@ -1,5 +1,5 @@
 # MolecularDynamics
-Project 1 on the mechanical properties of Nano Wires under compression
+Project 1 on the mechanical properties of Nano Wires (under compression this time).
 run.sh calls the most vital LAMMPS and Python scripts that generate data
 files for visulization. Note that on my machine there were directories I
 check are empty, if you run run.sh it may complain there is no directory
